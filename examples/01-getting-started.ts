@@ -1,5 +1,4 @@
-import { Projection } from "./container";
-import { ContainerBuilder } from "./container-builder";
+import { ContainerBuilder } from "~/container-builder";
 
 export interface Types {
   a: number;
@@ -9,13 +8,6 @@ export interface Types {
 
 export const containerBuilder = new ContainerBuilder<Types>();
 
-const containerProjection = containerBuilder.buildContainerConfig({
-  a: true,
-  c: true,
-});
-
-type Services = Projection<Types, typeof containerProjection>;
-
 async function main() {
   const container = await containerBuilder.buildContainer(async (c) => {
     c.set("a", async () => 1);
@@ -23,8 +15,10 @@ async function main() {
     c.set("c", async () => true);
     return c;
   });
-  
-  const g = await container.getProjection(containerProjection);
+
+  const service_a = await container.get("a"); // service_a is a number
+  const service_b = await container.get("b"); // service_b is a string
+  const service_c = await container.get("c"); // service_c is a boolean
 }
 
 main();
