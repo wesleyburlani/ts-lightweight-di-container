@@ -40,7 +40,7 @@ export type BuildContainerFn<T> = (container: Container<T>) => Promise<Container
  */
 export class ContainerBuilder<T> {
     /**
-     * Builds a container configuration object that specifies which services are needed
+     * Builds a projection configuration object that specifies which services are needed
      * @param config Configuration object that specifies which services are needed
      * @returns The configuration object
      * @example
@@ -51,6 +51,7 @@ export class ContainerBuilder<T> {
      *  c: true,
      * });
      * // containerProjection is { a: true, b: false, c: true }
+     * ```
      */
     buildProjectionConfig<C extends ProjectionConfig<T>>(config: C): C {
         return config as C;
