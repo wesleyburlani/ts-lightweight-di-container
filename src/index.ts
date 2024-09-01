@@ -1,11 +1,30 @@
-import { buildContainer } from "./di/container";
-import { createServer } from "./ports/http/server";
+import { Projection } from "./container";
+import { ContainerBuilder } from "./container-builder";
+
+export interface Types {
+  a: number;
+  b: string;
+  c: boolean;
+}
+
+export const containerBuilder = new ContainerBuilder<Types>();
+
+const containerProjection = containerBuilder.buildContainerConfig({
+  a: true,
+  c: true,
+});
+
+type Services = Projection<Types, typeof containerProjection>;
 
 async function main() {
-    const port = 3000;
-    buildContainer();
-    const server = await createServer();
-    server.listen(port, () => console.log(`server up and running on port ${port}`));
+  const container = await containerBuilder.buildContainer(async (c) => {
+    c.set("a", async () => 1);
+    c.set("b", async () => "hello");
+    c.set("c", async () => true);
+    return c;
+  });
+  
+  const g = await container.getProjection(containerProjection);
 }
 
 main();
